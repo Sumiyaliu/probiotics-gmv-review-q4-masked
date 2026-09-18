@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>益生菌品类 · 季度GMV Review & Q4目标拆解（脱敏版）</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --teal-900:#134e4a; --teal-700:#0f766e; --teal-500:#14b8a6; --teal-100:#ccfbf1;
+    --amber-600:#d97706; --amber-100:#fef3c7;
+    --slate-900:#0f172a; --slate-600:#475569; --slate-400:#94a3b8;
+    --slate-200:#e2e8f0; --slate-50:#f8fafc; --white:#fff;
+    --rose-600:#e11d48; --indigo-600:#4f46e5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Microsoft YaHei",sans-serif;background:var(--slate-50);color:var(--slate-900);line-height:1.7;}
+  .wrap{max-width:1120px;margin:0 auto;padding:24px 20px 80px;}
+  header{background:linear-gradient(135deg,var(--teal-900),var(--teal-700));color:#fff;border-radius:16px;padding:36px 36px 30px;margin-bottom:20px;position:relative;overflow:hidden;}
+  header::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06);}
+  header::before{content:"";position:absolute;right:60px;bottom:-90px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--amber-100);color:var(--amber-600);font-size:12.5px;font-weight:600;padding:5px 14px;border-radius:999px;margin-bottom:14px;letter-spacing:.5px;}
+  .badge::before{content:"🛡";font-size:13px;}
+  h1{font-size:26px;font-weight:700;letter-spacing:.5px;position:relative;z-index:1;}
+  .sub{margin-top:8px;font-size:14px;color:rgba(255,255,255,.75);position:relative;z-index:1;}
+
+  .mask-panel{background:var(--white);border:1px solid var(--slate-200);border-left:4px solid var(--amber-600);border-radius:12px;padding:18px 22px;margin-bottom:28px;}
+  .mask-panel h3{font-size:14px;color:var(--amber-600);margin-bottom:10px;letter-spacing:1px;}
+  .mask-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+  .mask-item{font-size:13px;color:var(--slate-600);background:var(--slate-50);border-radius:8px;padding:10px 14px;}
+  .mask-item b{color:var(--slate-900);}
+  .mask-item .arrow{color:var(--amber-600);font-weight:700;margin:0 4px;}
+
+  h2{font-size:19px;font-weight:700;margin:38px 0 6px;display:flex;align-items:center;gap:10px;}
+  h2 .num{background:var(--teal-700);color:#fff;width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:none;}
+  .section-desc{font-size:13.5px;color:var(--slate-600);margin-bottom:16px;padding-left:38px;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
+  .kpi{background:var(--white);border:1px solid var(--slate-200);border-radius:12px;padding:18px 18px 14px;transition:transform .15s;}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,23,42,.07);}
+  .kpi .label{font-size:12.5px;color:var(--slate-400);margin-bottom:4px;}
+  .kpi .value{font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--teal-900);}
+  .kpi .value small{font-size:13px;font-weight:500;color:var(--slate-400);}
+  .kpi .delta{font-size:12px;margin-top:4px;font-weight:600;}
+  .up{color:var(--teal-700);} .down{color:var(--rose-600);} .warn{color:var(--amber-600);}
+
+  .card{background:var(--white);border:1px solid var(--slate-200);border-radius:12px;padding:22px;margin-bottom:16px;}
+  .card h4{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--slate-900);}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:820px){.grid-2{grid-template-columns:1fr;}}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{background:var(--slate-50);color:var(--slate-600);font-weight:600;text-align:left;padding:10px 12px;border-bottom:2px solid var(--slate-200);white-space:nowrap;}
+  td{padding:10px 12px;border-bottom:1px solid var(--slate-200);font-variant-numeric:tabular-nums;}
+  tr:last-child td{border-bottom:none;}
+  tr.total td{font-weight:700;background:var(--teal-100);color:var(--teal-900);}
+  tr.hl td{background:var(--amber-100);font-weight:600;}
+  .tag{display:inline-block;font-size:11.5px;padding:2px 10px;border-radius:999px;font-weight:600;}
+  .tag-rec{background:var(--teal-100);color:var(--teal-700);}
+  .tag-no{background:#ffe4e6;color:var(--rose-600);}
+  .tag-ok{background:var(--slate-200);color:var(--slate-600);}
+
+  .chart-box{position:relative;height:300px;}
+  .chart-box.tall{height:340px;}
+
+  .concl{background:linear-gradient(135deg,var(--teal-900),var(--teal-700));color:#fff;border-radius:12px;padding:24px 26px;}
+  .concl h4{font-size:15px;margin-bottom:12px;letter-spacing:.5px;}
+  .concl ul{list-style:none;}
+  .concl li{padding:7px 0 7px 26px;position:relative;font-size:13.5px;color:rgba(255,255,255,.92);}
+  .concl li::before{content:"▸";position:absolute;left:4px;color:var(--teal-500);}
+  .risk{background:#fff1f2;border:1px solid #fecdd3;border-radius:12px;padding:20px 24px;margin-top:14px;}
+  .risk h4{color:var(--rose-600);font-size:14.5px;margin-bottom:10px;}
+  .risk li{font-size:13.5px;color:var(--slate-600);}
+  .risk ul{list-style:none;}
+  .risk li{padding:5px 0 5px 24px;position:relative;}
+  .risk li::before{content:"⚠";position:absolute;left:0;font-size:13px;}
+
+  footer{text-align:center;margin-top:48px;font-size:12.5px;color:var(--slate-400);}
+  .footnote{font-size:12px;color:var(--slate-400);margin-top:6px;}
+  .pill{font-size:11px;background:var(--slate-200);color:var(--slate-600);border-radius:6px;padding:1px 8px;margin-left:6px;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="badge">DATA MASKED · 已脱敏分析版</div>
+  <h1>益生菌品类 · 季度GMV Review & Q4目标拆解</h1>
+  <div class="sub">金额指数化 / SKU去价格化 —— 保留渠道口径与全部比率指标、分析结论</div>
+</header>
+
+<!-- 脱敏说明 -->
+<div class="mask-panel">
+  <h3>脱敏处理说明</h3>
+  <div class="mask-grid">
+    <div class="mask-item"><b>渠道口径</b>：保留原渠道名称（ADQ / 微信豆 / 公域流量），便于对照分析</div>
+    <div class="mask-item"><b>金额指数化</b>：所有绝对金额换算为<b>指数点</b>，基准 = 季度GMV目标（100点）</div>
+    <div class="mask-item"><b>SKU脱敏</b>：去除具体售价，以标准装售价 = <b>1.00×</b> 基准倍数呈现</div>
+    <div class="mask-item"><b>保留指标</b>：达成率 / ROI / 占比 / 增幅 / 倍数 / 场次 / 时间结构 与全部分析结论</div>
+  </div>
+</div>
+
+<!-- 一、达成总览 -->
+<h2><span class="num">1</span>季度 GMV 达成总览</h2>
+<div class="section-desc">时间进度 87.7%（107/122天），GMV 进度落后时间进度 3.0pct，月末冲刺期承压。</div>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="label">GMV 达成指数</div><div class="value">84.7<small> / 100</small></div><div class="delta down">达成率 84.7%</div></div>
+  <div class="kpi"><div class="label">剩余缺口</div><div class="value">15.3<small> 点</small></div><div class="delta warn">需日均 10.2 点（当前 7.9，+28.9%）</div></div>
+  <div class="kpi"><div class="label">总消耗指数</div><div class="value">48.7<small> 点</small></div><div class="delta" style="color:var(--slate-400)">日均 4.6 点</div></div>
+  <div class="kpi"><div class="label">综合 ROI</div><div class="value">1.65</div><div class="delta" style="color:var(--slate-400)">不含公域口径</div></div>
+  <div class="kpi"><div class="label">直播场次</div><div class="value">92<small> 场</small></div><div class="delta" style="color:var(--slate-400)">场均产出 9.2 点 · 场均消耗 5.3 点</div></div>
+  <div class="kpi"><div class="label">场次密度</div><div class="value">0.86<small> 场/天</small></div><div class="delta warn">Q4 硬约束</div></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <h4>分渠道 GMV 与消耗结构（指数点）</h4>
+  <div class="grid-2">
+    <div class="chart-box"><canvas id="chShare"></canvas></div>
+    <div class="chart-box"><canvas id="chChannel"></canvas></div>
+  </div>
+  <table style="margin-top:16px">
+    <thead><tr><th>渠道</th><th>GMV 指数</th><th>占比</th><th>消耗指数</th><th>ROI</th><th>日均GMV</th><th>日均消耗</th></tr></thead>
+    <tbody>
+      <tr><td>ADQ（含全域通）</td><td>36.3</td><td>42.9%</td><td>22.7</td><td>1.60</td><td>3.4</td><td>2.1</td></tr>
+      <tr><td>微信豆</td><td>44.2</td><td>52.2%</td><td>26.0</td><td><b>1.70</b></td><td>4.1</td><td>2.4</td></tr>
+      <tr><td>公域流量</td><td>4.2</td><td>4.9%</td><td>待补</td><td>待补</td><td>0.4</td><td>待补</td></tr>
+      <tr class="total"><td>合计</td><td>84.7</td><td>100%</td><td>48.7</td><td>1.65</td><td>7.9</td><td>4.6</td></tr>
+    </tbody>
+  </table>
+  <div class="footnote">※ 核心结论：微信豆为当前主力（52.2%），ADQ仅 42.9%，与 Q4「ADQ占 70%」目标存在 <b style="color:var(--rose-600)">27.1pct 结构性差距</b>。</div>
+</div>
+
+<!-- 二、冲刺方案 -->
+<h2><span class="num">2</span>月末冲刺方案（下半月）</h2>
+<div class="section-desc">剩余 15 天需补 15.3 点缺口：所需场次 17 场（1.1场/天），所需总消耗 9.2 点（日均 6.2 点，+35%）。</div>
+
+<div class="card">
+  <h4>三方案对比</h4>
+  <table>
+    <thead><tr><th>方案</th><th>ADQ份额</th><th>ADQ GMV</th><th>合计日均消耗</th><th>增幅</th><th>可行性</th></tr></thead>
+    <tbody>
+      <tr><td>一：维持现状</td><td>42.9%</td><td>6.6 点</td><td>5.9 点</td><td>+29%</td><td><span class="tag tag-ok">稳妥</span></td></tr>
+      <tr class="hl"><td>二：ADQ加码（推荐）</td><td>60%</td><td>9.2 点</td><td>6.2 点</td><td>+37%</td><td><span class="tag tag-rec">可冲 · 需盯ROI</span></td></tr>
+      <tr><td>三：直接对齐Q4结构</td><td>70%</td><td>10.7 点</td><td>6.3 点</td><td>+38%</td><td><span class="tag tag-no">ROI易崩 · 不建议</span></td></tr>
+    </tbody>
+  </table>
+  <div class="footnote">※ 推荐方案二：ADQ日均 GMV 6.1 点、日均消耗 3.8 点（+80%），按每 2 天提 15–20% 爬坡。</div>
+</div>
+
+<div class="card">
+  <h4>ADQ逐日放量节奏（指数点/天）</h4>
+  <div class="chart-box"><canvas id="chRamp"></canvas></div>
+</div>
+
+<!-- 三、Q4拆解 -->
+<h2><span class="num">3</span>Q4 目标拆解（10/1–12/31）</h2>
+<div class="section-desc">总目标 115.4 点 / 92 天，日均 GMV 12.5 点（+58.4%）；ADQ目标 80.8 点（70%），日均消耗 5.5 点（当前 2.1，需 <b>2.6倍</b>）；综合 ROI 要求 1.63。</div>
+
+<div class="card">
+  <h4>月度拆解（大促加权 10月28% / 11月40% / 12月32%）</h4>
+  <div class="chart-box tall"><canvas id="chQ4"></canvas></div>
+  <table style="margin-top:16px">
+    <thead><tr><th>月份</th><th>GMV目标</th><th>日均GMV</th><th>ADQ GMV(70%)</th><th>ADQ日均消耗</th><th>场次</th></tr></thead>
+    <tbody>
+      <tr><td>10月</td><td>32.3 点</td><td>10.4</td><td>22.6 点</td><td>4.6</td><td>36 场</td></tr>
+      <tr class="hl"><td>11月（大促峰值）</td><td>46.2 点</td><td>15.4</td><td>32.3 点</td><td>6.7</td><td>50 场</td></tr>
+      <tr><td>12月（大促+年货）</td><td>36.9 点</td><td>11.9</td><td>25.8 点</td><td>5.2</td><td>40 场</td></tr>
+      <tr class="total"><td>Q4 合计</td><td>115.4 点</td><td>12.5</td><td>80.8 点</td><td>5.5</td><td>126 场</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h4>ADQ分阶段放量节奏（单周增幅 15–20%）</h4>
+    <div class="chart-box"><canvas id="chPhase"></canvas></div>
+  </div>
+  <div class="card">
+    <h4>ROI 敏感度：提效即省消耗</h4>
+    <div class="chart-box"><canvas id="chRoi"></canvas></div>
+    <div class="footnote">※ ROI 从 1.6 → 1.8，达成 80.8 点 GMV 所需消耗从 50.5 → 44.9 点，<b style="color:var(--teal-700)">节省 5.6 点/季度</b>。「提ROI」与「堆消耗」必须同步做。</div>
+  </div>
+</div>
+
+<!-- 四、SKU机制 -->
+<h2><span class="num">4</span>DAP 商品机制复盘<span class="pill">去价格化 · 基准倍数呈现</span></h2>
+<div class="section-desc">SKU-A（标准装·6盒）售价 = 1.00× 基准，其余 SKU 以倍数呈现，保留让利/提客单的相对关系。</div>
+
+<div class="card">
+  <table>
+    <thead><tr><th>SKU</th><th>售价倍数</th><th>单盒价变化</th><th>客单价变化</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td>SKU-A 标准装（6盒）</td><td>1.00×</td><td>基线</td><td>基线</td><td>价格锚点</td></tr>
+      <tr class="hl"><td>SKU-B 大容量装（10盒）</td><td>1.60×</td><td class="down">-4.1%</td><td class="up">+59.7%</td><td>以 4.1% 单盒让利换 59.7% 客单提升，杠杆约 <b>14.5 倍</b></td></tr>
+      <tr><td>SKU-C 大促装（15盒）</td><td>2.20×</td><td class="down">-11.9%</td><td>+120.1%</td><td>仅大促节点推</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h4>SKU-B 占比 → 客单价 & 订单需求敏感度</h4>
+    <div class="chart-box"><canvas id="chSku"></canvas></div>
+  </div>
+  <div class="card">
+    <h4>敏感度明细</h4>
+    <table>
+      <thead><tr><th>SKU-B占比</th><th>整体客单价</th><th>所需订单</th><th>等效消耗节省</th></tr></thead>
+      <tbody>
+        <tr><td>20%</td><td>1.12×</td><td>0.89×</td><td class="up">-7.6 点</td></tr>
+        <tr class="hl"><td>30%</td><td>1.18×</td><td>0.85×</td><td class="up"><b>-10.8 点</b></td></tr>
+        <tr><td>50%</td><td>1.30×</td><td>0.77×</td><td class="up">-16.2 点</td></tr>
+      </tbody>
+    </table>
+    <div class="footnote" style="margin-top:10px">※ Q4 机制建议：主推 SKU-B（占比冲 30%+）、SKU-A 做价格锚点、大促加推 SKU-C；用加赠替代降价保价格体系；每天约 835 单（场均约 610 单）。</div>
+  </div>
+</div>
+
+<!-- 五、结论 -->
+<h2><span class="num">5</span>结论与行动清单</h2>
+<div class="concl">
+  <h4>复盘结论</h4>
+  <ul>
+    <li>季度缺口 15.3 点；微信豆为压舱石（ROI 1.70 最优）</li>
+    <li>ADQ量级与效率均有提升空间，是 Q4 增长核心变量</li>
+    <li>公域流量消耗/ROI 数据缺失，需先补统计口径</li>
+    <li>场次密度（当前 0.86 场/天）是 Q4 达标的硬约束</li>
+  </ul>
+  <h4 style="margin-top:18px">Q4 行动清单</h4>
+  <ul>
+    <li>月末冲刺：ADQ消耗 2.1 → 3.8 点/天，15 天排 17 场以上</li>
+    <li>10月：3.8 → 4.9 点/天，素材日更 10–15 条，大促蓄水</li>
+    <li>11月：6.7 点/天（峰值日 8.5–10.3 点），50 场</li>
+    <li>12月：回落 5.0–5.6 点/天，转复购与年货囤货</li>
+    <li>全期：SKU-B 占比 30%+，SKU-C 上大促节点</li>
+  </ul>
+</div>
+<div class="risk">
+  <h4>最大风险提示</h4>
+  <ul>
+    <li>ADQ日均消耗需 <b>2.6 倍</b>增长；历史经验单月消耗翻倍会导致 ROI 下滑 10–20%</li>
+    <li>若 ROI 跌至 1.4，所需消耗升至 57.7 点（日均 6.3 点）</li>
+    <li>建议设置双周复盘闸门：<b>ROI 连续 3 天低于 1.5 时暂停放量</b>，优先优化素材与人群</li>
+  </ul>
+</div>
+
+<footer>益生菌品类季度复盘 · 脱敏分析展示版 · 金额均为指数点（基准：季度GMV目标=100）</footer>
+</div>
+
+<script>
+const TEAL='#0f766e',TEAL_L='#5eead4',AMBER='#d97706',SLATE='#94a3b8',INDIGO='#4f46e5',ROSE='#e11d48';
+Chart.defaults.font.family='-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+Chart.defaults.font.size=12;
+Chart.defaults.color='#475569';
+
+new Chart(document.getElementById('chShare'),{
+  type:'doughnut',
+  data:{labels:['ADQ 42.9%','微信豆 52.2%','公域流量 4.9%'],
+    datasets:[{data:[36.3,44.2,4.2],backgroundColor:[TEAL,AMBER,SLATE],borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+    plugins:{legend:{position:'bottom'},title:{display:true,text:'GMV 占比结构（指数点）'}}}
+});
+
+new Chart(document.getElementById('chChannel'),{
+  type:'bar',
+  data:{labels:['ADQ','微信豆'],
+    datasets:[{label:'GMV 指数',data:[36.3,44.2],backgroundColor:TEAL,borderRadius:6},
+              {label:'消耗指数',data:[22.7,26.0],backgroundColor:AMBER,borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'},title:{display:true,text:'GMV vs 消耗对比'}},
+    scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'}}}}
+});
+
+new Chart(document.getElementById('chRamp'),{
+  type:'line',
+  data:{labels:['9/16–9/19','9/20–9/24','9/25–9/30'],
+    datasets:[
+      {label:'日均消耗（点/天）',data:[2.6,3.4,4.1],borderColor:AMBER,backgroundColor:'rgba(217,119,6,.12)',fill:true,tension:.35,pointRadius:5},
+      {label:'日均GMV（点/天）',data:[4.1,5.5,6.5],borderColor:TEAL,backgroundColor:'rgba(15,118,110,.10)',fill:true,tension:.35,pointRadius:5}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'},title:{display:true,text:'起步 → 爬坡 → 冲量（区间均值）'}},
+    scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'}}}}
+});
+
+new Chart(document.getElementById('chQ4'),{
+  type:'bar',
+  data:{labels:['10月（大促28%）','11月（大促40%）','12月（大促32%）'],
+    datasets:[
+      {label:'ADQ GMV（70%）',data:[22.6,32.3,25.8],backgroundColor:TEAL,borderRadius:6},
+      {label:'其他渠道 GMV',data:[9.7,13.9,11.1],backgroundColor:TEAL_L,borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'},title:{display:true,text:'Q4 月度 GMV 目标结构（指数点 · 合计115.4）'}},
+    scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,grid:{color:'#f1f5f9'}}}}
+});
+
+new Chart(document.getElementById('chPhase'),{
+  type:'line',
+  data:{labels:['月末冲刺','10月上旬','10月下旬','11月峰值','12月上旬','12月中下旬'],
+    datasets:[{label:'ADQ日均消耗（点/天）',data:[3.8,4.3,4.9,6.7,5.6,5.0],
+      borderColor:INDIGO,backgroundColor:'rgba(79,70,229,.12)',fill:true,tension:.35,pointRadius:5}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:'冲量→峰值→回落 节奏'}},
+    scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'}}}}
+});
+
+new Chart(document.getElementById('chRoi'),{
+  type:'bar',
+  data:{labels:['ROI 1.6','ROI 1.7','ROI 1.8'],
+    datasets:[{label:'所需消耗（指数点）',data:[50.5,47.4,44.9],backgroundColor:[ROSE,AMBER,TEAL],borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:'达成ADQ目标80.8点所需消耗'}},
+    scales:{y:{beginAtZero:true,grid:{color:'#f1f5f9'}}}}
+});
+
+new Chart(document.getElementById('chSku'),{
+  data:{labels:['占比 20%','占比 30%','占比 50%'],
+    datasets:[
+      {type:'bar',label:'整体客单价倍数',data:[1.12,1.18,1.30],backgroundColor:TEAL,borderRadius:6,yAxisID:'y'},
+      {type:'line',label:'所需订单倍数',data:[0.89,0.85,0.77],borderColor:AMBER,pointRadius:5,tension:.3,yAxisID:'y1'}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'},title:{display:true,text:'占比 ↑ → 客单 ↑ / 订单需求 ↓'}},
+    scales:{y:{position:'left',beginAtZero:false,min:1,grid:{color:'#f1f5f9'}},
+            y1:{position:'right',beginAtZero:false,min:0.7,max:1,grid:{display:false}}}}
+});
+</script>
+</body>
+</html>
